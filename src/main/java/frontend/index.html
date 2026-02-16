@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spring Boot AI Hub</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -10,37 +9,29 @@
 <div class="app-container">
     <header>
         <h1>Semantic Search Portal</h1>
-        <p>Spring Boot 3 + AI + PostgreSQL</p>
+        <div id="authSection">
+            <button id="loginBtn" onclick="handleLogin()">Login with AWS Cognito</button>
+        </div>
     </header>
 
-    <main>
-        <section class="card">
-            <h2>User Registration</h2>
-            <div class="form-group">
-                <input type="text" id="username" placeholder="Username">
-                <input type="email" id="email" placeholder="Email Address">
-                <input type="password" id="password" placeholder="Password">
-                <button onclick="handleRegister()">Create Account</button>
-            </div>
-        </section>
-
+    <main id="mainContent" style="display:none;">
         <section class="card">
             <h2>Knowledge Base Ingestion</h2>
-            <textarea id="knowledgeText" placeholder="Paste documentation or facts here to vectorize..."></textarea>
+            <textarea id="knowledgeText" placeholder="Paste facts..."></textarea>
             <button class="secondary" onclick="handleIngest()">Store in Vector DB</button>
         </section>
 
         <section class="card highlight">
             <h2>Ask the Assistant</h2>
             <div class="search-box">
-                <input type="text" id="query" placeholder="Ask a question about your data...">
+                <input type="text" id="query" placeholder="Ask a question...">
                 <button onclick="handleAsk()">Search</button>
             </div>
             <div id="aiResponse" class="response-box">Waiting for query...</div>
         </section>
     </main>
 
-    <footer id="statusLog">System Ready</footer>
+    <footer id="statusLog">Checking authentication...</footer>
 </div>
 <script src="app.js"></script>
 </body>
