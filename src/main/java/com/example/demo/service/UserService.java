@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.User;
+import com.example.demo.exception.UserAlreadyExistsException;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class UserService {
     @Transactional
     public User registerNewUser(User user) {
         if (userRepository.existsByEmail(user.getEmail())){
-            throw new RuntimeException("Email already in use");
+            throw new UserAlreadyExistsException("Email already exists" + user.getEmail());
         }
         return userRepository.save(user);
     }

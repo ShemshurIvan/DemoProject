@@ -1,0 +1,43 @@
+services:
+  # Service 1: PostgreSQL Database
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: demo-postgres
+    environment:
+      - POSTGRES_DB=demodb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432" # Maps host port 5432 to container port 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persists database data
+    networks:
+      - demo-network
+
+  # Service 2: Spring Boot Application
+  app:
+    build: .
+    container_name: demo-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-db
+    environment:
+      # Network configuration: 'postgres-db' refers to the service name above
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/demodb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      # Hibernate configuration for schema handling
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+    networks:
+      - demo-network
+
+# Define persistent storage for the database
+volumes:
+  postgres_data:
+
+# Define a custom bridge network for inter-container communication
+networks:
+  demo-network:
+    driver: bridge
