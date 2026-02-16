@@ -20,7 +20,7 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        String email = oAuth2User.getAttributes().get("email").toString();
+        String email =(String) oAuth2User.getAttributes().get("email");
         String name = oAuth2User.getAttributes().get("name").toString();
 
         userRepository.findByEmail(email).orElseGet(() -> {
@@ -30,10 +30,6 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService {
             newUser.setPassword(null);
             return userRepository.save(newUser);
         });
-
         return oAuth2User;
     }
-
-
-
 }
