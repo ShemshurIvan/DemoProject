@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.service.CustomOAuth2Service;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -15,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguratoin {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2Service customOAuth2Service) throws Exception {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
@@ -23,6 +24,12 @@ public class SecurityConfiguratoin {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/register").permitAll()
                         .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2
+                        -> oauth2.userInfoEndpoint(userInfo
+                        -> userInfo.userService(customOAuth2Service)
+                )
+                .defaultSuccessUrl("http://localhost:3000/dashboard", true)
                 );
 
         return http.build();
