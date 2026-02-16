@@ -2,87 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AI Semantic Assistant</title>
-    <style>
-        body { font-family: sans-serif; background: #f4f7f6; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 600px; }
-        h1 { color: #2c3e50; text-align: center; }
-        textarea, input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        button:hover { background: #2980b9; }
-        #responseArea { margin-top: 20px; padding: 15px; background: #eef2f3; border-radius: 4px; min-height: 50px; white-space: pre-wrap; color: #34495e; }
-        .section { margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
-    </style>
+    <title>Spring Boot AI Hub</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="app-container">
+    <header>
+        <h1>Semantic Search Portal</h1>
+        <div id="authSection">
+            <button id="loginBtn" onclick="handleLogin()">Login with GitHub</button>
+        </div>
+    </header>
 
-<div class="container">
-    <h1>AI Knowledge Base</h1>
+    <main id="mainContent" style="display:none;">
+        <section class="card">
+            <h2>Knowledge Base Ingestion</h2>
+            <textarea id="knowledgeText" placeholder="Paste facts..."></textarea>
+            <button class="secondary" onclick="handleIngest()">Store in Vector DB</button>
+        </section>
 
-    <div class="section">
-        <h3>1. Register User</h3>
-        <input type="text" id="regUser" placeholder="Username">
-        <input type="email" id="regEmail" placeholder="Email">
-        <input type="password" id="regPass" placeholder="Password">
-        <button onclick="register()">Register</button>
-    </div>
+        <section class="card highlight">
+            <h2>Ask the Assistant</h2>
+            <div class="search-box">
+                <input type="text" id="query" placeholder="Ask a question...">
+                <button onclick="handleAsk()">Search</button>
+            </div>
+            <div id="aiResponse" class="response-box">Waiting for query...</div>
+        </section>
+    </main>
 
-    <div class="section">
-        <h3>2. Add Knowledge (RAG)</h3>
-        <textarea id="knowledgeInput" rows="3" placeholder="Enter facts to save in the database..."></textarea>
-        <button onclick="ingest()">Ingest Data</button>
-    </div>
-
-    <div class="section">
-        <h3>3. Ask a Question</h3>
-        <input type="text" id="queryInput" placeholder="How do I get into the office?">
-        <button onclick="askAI()">Ask AI Assistant</button>
-    </div>
-
-    <div id="responseArea">Responses will appear here...</div>
+    <footer id="statusLog">Checking authentication...</footer>
 </div>
-
-<script>
-    const log = (msg) => document.getElementById('responseArea').innerText = msg;
-
-    async function register() {
-        const user = {
-            username: document.getElementById('regUser').value,
-            email: document.getElementById('regEmail').value,
-            password: document.getElementById('regPass').value
-        };
-
-        try {
-            const res = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(user)
-            });
-            const data = await res.json();
-            log("Success: " + JSON.stringify(data));
-        } catch (err) { log("Error: " + err.message); }
-    }
-
-    async function ingest() {
-        const content = document.getElementById('knowledgeInput').value;
-        try {
-            const res = await fetch('/api/rag/ingest', {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: content
-            });
-            log(await res.text());
-        } catch (err) { log("Error: " + err.message); }
-    }
-
-    async function askAI() {
-        const question = document.getElementById('queryInput').value;
-        try {
-            const res = await fetch(`/api/rag/ask?question=${encodeURIComponent(question)}`);
-            log(await res.text());
-        } catch (err) { log("Error: " + err.message); }
-    }
-</script>
-
+<script src="app.js"></script>
 </body>
 </html>
